@@ -5,8 +5,10 @@ console.log(createElementsFromGallery);
 
 const galleryContainer = document.querySelector('.gallery');
 const elementsFromGallery = createElementsFromGallery(galleryItems);
-galleryContainer.insertAdjacentHTML('afterbegin', elementsFromGallery)
-galleryContainer.addEventListener('click', onGalleryContainerClick)
+
+galleryContainer.insertAdjacentHTML('afterbegin', elementsFromGallery);
+// const onParentImageCard = document.querySelector('div.gallery')
+galleryContainer.addEventListener('click', onGalleryContainerClick);
 
 function createElementsFromGallery(obj) {
    return galleryItems.map(({ preview, original, description }) => {
@@ -26,25 +28,29 @@ function createElementsFromGallery(obj) {
 
 function onGalleryContainerClick(event) {
     event.preventDefault()
-    if (!event.target.classList.contains('gallery__image')) {
+    const isGalleryImageEl = event.target.classList.contains('gallery__image');
+    
+    if (!isGalleryImageEl) {
         return;
     }
-    console.log(event.target);
+
+    const galleryImageEl = event.target;
+    const onParentImageCard = galleryImageEl.closest('.gallery__link');
+    
+    removeActiveImageClass();
+    addActiveImageClass(onParentImageCard);
+    
+    console.log(galleryImageEl.src);
 }
 
+function removeActiveImageClass() {
+    const currentActiveImage = document.querySelector('.gallery__link.is-open');
+    
+    if (currentActiveImage) {
+        currentActiveImage.classList.remove('is-open');
+    };
+}
 
-
-
-
-
-// const modalBox = document.querySelector('div.gallery')
-// galleryContainer.addEventListener('click', OnMainListClick)
-
-
-// import * as basicLightbox from 'basiclightbox'
-
-// const instance = basicLightbox.create(`
-//     <img src="assets/images/image.png" width="800" height="600">
-// `)
-
-// instance.show()
+function addActiveImageClass(card) {
+    card.classList.add('is-open');
+};
