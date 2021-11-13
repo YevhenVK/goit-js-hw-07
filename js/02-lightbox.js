@@ -20,6 +20,12 @@ function createElementsFromGallery(obj) {
     </a>`})
     .join('')
 };
-const lightbox = new SimpleLightbox('.gallery a', { captionsData: "alt", captionDelay: 250, captionPosition: 'bottom' });
+
+const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: "alt",
+    captionDelay: 250,
+    captionPosition: 'bottom'
+});
+
 console.log(galleryItems);
 
