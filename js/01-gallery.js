@@ -57,7 +57,7 @@ galleryContainer.addEventListener('click', event => {
 
 function originalLink(url) {
     instance.element().querySelector("img").src = url
-}
+};
 
 function pressEsc(key) {
     switch (key) {
@@ -85,4 +85,4 @@ function pressEsc(key) {
         default:
             break;
     }
-}
+};
