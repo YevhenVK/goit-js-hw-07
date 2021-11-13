@@ -1,16 +1,14 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
-console.log(createElementsFromGallery);
-
 const galleryContainer = document.querySelector('.gallery');
 const elementsFromGallery = createElementsFromGallery(galleryItems);
 
 galleryContainer.insertAdjacentHTML('afterbegin', elementsFromGallery);
-// const onParentImageCard = document.querySelector('div.gallery')
-galleryContainer.addEventListener('click', onGalleryContainerClick);
 
-function createElementsFromGallery(obj) {
+console.log(createElementsFromGallery(galleryItems));
+
+function createElementsFromGallery(galleryItems) {
    return galleryItems.map(({ preview, original, description }) => {
        return `
         <div class="gallery__item">
@@ -24,33 +22,67 @@ function createElementsFromGallery(obj) {
         </div>`
    })
     .join('')
-}
+};
 
-function onGalleryContainerClick(event) {
-    event.preventDefault()
-    const isGalleryImageEl = event.target.classList.contains('gallery__image');
-    
-    if (!isGalleryImageEl) {
-        return;
+let currentIndex = 0;
+
+const options = {
+    onShow: (instance) => {
+        window.addEventListener("keydown", pressEsc);
+        
+    },
+
+    onClose: (instance) => {
+        window.removeEventListener("keydown", pressEsc);
+       
     }
 
-    const galleryImageEl = event.target;
-    const onParentImageCard = galleryImageEl.closest('.gallery__link');
-    
-    removeActiveImageClass();
-    addActiveImageClass(onParentImageCard);
-    
-    console.log(galleryImageEl.src);
-}
-
-function removeActiveImageClass() {
-    const currentActiveImage = document.querySelector('.gallery__link.is-open');
-    
-    if (currentActiveImage) {
-        currentActiveImage.classList.remove('is-open');
-    };
-}
-
-function addActiveImageClass(card) {
-    card.classList.add('is-open');
 };
+const instance = basicLightbox.create(
+    `<img src="" width="800" height="600">`, options
+);
+
+galleryContainer.addEventListener('click', event => {
+    event.preventDefault();
+    if (event.target.nodeName !== 'IMG') {
+        return
+    };
+
+    let itemLink = event.target.getAttribute('data-source');
+
+    originalLink(itemLink);
+    currentIndex = Number(event.target.getAttribute("data-index"));
+    instance.show();
+});
+
+function originalLink(url) {
+    instance.element().querySelector("img").src = url
+}
+
+function pressEsc(key) {
+    switch (key) {
+        case "ArrowRight":
+            currentIndex += 1
+        if (currentIndex >= galleryItems.length) {
+            currentIndex = 0
+        }
+            
+        originalLink(galleryItems[currentIndex].original)
+            break;
+        case "ArrowLeft":
+            currentIndex -= 1
+            if (currentIndex <= 0) {
+                currentIndex = galleryItems.length - 1
+            }
+
+        originalLink(galleryItems[currentIndex].original)
+            break;
+        
+        case "Escape":
+            instance.close();
+            break;
+        
+        default:
+            break;
+    }
+}
